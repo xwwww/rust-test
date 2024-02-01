@@ -1,1 +1,1 @@
-/Users/xiawei/workspace/rust-test/hecto/target/debug/hecto: /Users/xiawei/workspace/rust-test/hecto/src/editor.rs /Users/xiawei/workspace/rust-test/hecto/src/main.rs /Users/xiawei/workspace/rust-test/hecto/src/terminal.rs
+/Users/xiawei/workspace/rust-test/hecto/target/debug/hecto: /Users/xiawei/workspace/rust-test/hecto/src/document.rs /Users/xiawei/workspace/rust-test/hecto/src/editor.rs /Users/xiawei/workspace/rust-test/hecto/src/main.rs /Users/xiawei/workspace/rust-test/hecto/src/row.rs /Users/xiawei/workspace/rust-test/hecto/src/terminal.rs
