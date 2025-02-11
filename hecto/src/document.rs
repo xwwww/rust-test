@@ -4,6 +4,7 @@ use std::fs;
 #[derive(Default)]
 pub struct Document {
   rows: Vec<Row>,
+ pub file_name: Option<String>,
 }
 
 impl Document {
@@ -13,8 +14,12 @@ impl Document {
     for value in contents.lines() {
       rows.push(Row::from(value));
     }
+    // Ok 是 Result 类型的一个变体，Result 类型是一个枚举类型，它有两个变体：Ok 和 Err。
+    // Ok 变体表示操作成功，并包含操作的结果；Err 变体表示操作失败，并包含一个错误信息。
+    // Ok() 函数是一个辅助函数，用于创建一个 Result 类型的值，其中包含一个成功的结果。
     Ok(Self{
-      rows
+      rows,
+      file_name: Some(filename.to_string()),
     })
   }
   pub fn row(&self, index:usize) -> Option<&Row> {
