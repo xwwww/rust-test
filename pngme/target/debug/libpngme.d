@@ -1,1 +1,0 @@
-/Users/xiawei/workspace/rust-test/pngme/target/debug/libpngme.rlib: /Users/xiawei/workspace/rust-test/pngme/src/chunk.rs /Users/xiawei/workspace/rust-test/pngme/src/chunk_type.rs /Users/xiawei/workspace/rust-test/pngme/src/lib.rs /Users/xiawei/workspace/rust-test/pngme/src/png.rs

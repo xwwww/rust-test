@@ -10,10 +10,6 @@ anyhow = "1.0"
 clap = { version = "4.3.23", features = ["derive", "std"] }
 crc = "3.0"
 
-[lib]
-name = "pngme"  # 确保库名和项目中引用的一致
-path = "src/lib.rs"
-
 [[bin]]
 name = "pngme"
 path = "src/main.rs"
