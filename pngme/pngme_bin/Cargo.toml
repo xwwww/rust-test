@@ -1,0 +1,7 @@
+[package]
+name = "pngme_bin"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+pngme_lib = { path = "../pngme_lib" }
