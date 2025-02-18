@@ -23,7 +23,7 @@ export PATH=$PATH:/path/to/your/project/target/release
 ##### 使用方法
 
 ```bash
-pngme encode <FILE_PATH> <CHUNK_TYPE> <MESSAGE> [--output <OUTPUT_FILE>]
+pngme_bin encode <FILE_PATH> <CHUNK_TYPE> <MESSAGE> [--output <OUTPUT_FILE>]
 ```
 <FILE_PATH>：输入的 PNG 文件路径。 <br>
 <CHUNK_TYPE>：自定义的数据块类型，必须是 4 个字符长且由 ASCII 字母组成。<br>
@@ -31,25 +31,25 @@ MESSAGE：要编码的消息。<br>
 --output <OUTPUT_FILE>：可选参数，指定输出文件路径。若不指定，默认覆盖输入文件。
 
 ```bash
-pngme decode <FILE_PATH> <CHUNK_TYPE>
+pngme_bin decode <FILE_PATH> <CHUNK_TYPE>
 ```
 <FILE_PATH>：输入的 PNG 文件路径。<br>
 <CHUNK_TYPE>：要解码的数据块类型。
 
 ```bash
-pngme remove <FILE_PATH> <CHUNK_TYPE>
+pngme_bin remove <FILE_PATH> <CHUNK_TYPE>
 ```
 <FILE_PATH>：输入的 PNG 文件路径。<br>
 <CHUNK_TYPE>：要删除的数据块类型。<br>
 
 ```bash
-pngme print <FILE_PATH>
+pngme_bin print <FILE_PATH>
 ```
 <FILE_PATH>：输入的 PNG 文件路径。<br>
 
 #### 示例
 
 ```bash
-pngme encode input.png "HIDE" "Hello, World!" --output output.png
-pngme decode output.png "HIDE"
-pngme remove output.png "HIDE"
+pngme_bin encode input.png "HIDE" "Hello, World!" --output output.png
+pngme_bin decode output.png "HIDE"
+pngme_bin remove output.png "HIDE"
