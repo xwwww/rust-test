@@ -9,6 +9,7 @@ edition = "2021"
 anyhow = "1.0"
 clap = { version = "4.3.23", features = ["derive", "std"] }
 crc = "3.0"
+reqwest = { version = "0.11", features = ["blocking"] }
 
 [[bin]]
 name = "pngme_bin"

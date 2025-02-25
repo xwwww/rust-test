@@ -5,6 +5,7 @@ use pngme_lib::{Png, Chunk, ChunkType};
 use std::fs::File;
 use std::io::{Read, Write};
 use std::str::FromStr;
+use reqwest::blocking::get;
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
@@ -23,16 +24,22 @@ enum Commands {
 
 #[derive(Parser, Debug)]
 struct EncodeArgs {
-    file_path: PathBuf,
+    #[clap(flatten)]
+    input: InputArgs,
+
     chunk_type: String,
+
     message: String,
+
     #[clap(short = 'o', long = "output")]
     output: Option<PathBuf>,
 }
 
 #[derive(Parser, Debug)]
 struct DecodeArgs {
-    file_path: PathBuf,
+    #[clap(flatten)]
+    input: InputArgs,
+
     chunk_type: String,
 }
 
@@ -44,7 +51,17 @@ struct RemoveArgs {
 
 #[derive(Parser, Debug)]
 struct PrintArgs {
-    file_path: PathBuf,
+    #[clap(flatten)]
+    input: InputArgs,
+}
+
+#[derive(Parser, Debug)]
+struct InputArgs {
+    #[clap(short = 'f', long = "file-path", conflicts_with = "url")]
+    file_path: Option<PathBuf>,
+
+    #[clap(short = 'u', long = "url", conflicts_with = "file_path")]
+    url: Option<String>,
 }
 
 fn main() -> Result<()> {
@@ -58,14 +75,26 @@ fn main() -> Result<()> {
 }
 
 fn encode(args: EncodeArgs) -> Result<()> {
-    let mut file = File::open(&args.file_path)?;
-    let mut buffer = Vec::new();
-    file.read_to_end(&mut buffer)?;
+    let buffer = if let Some(url) = &args.input.url {
+        download_image(url)?
+    } else {
+        let mut file = File::open(args.input.file_path.as_ref().unwrap())?;
+        let mut buffer = Vec::new();
+        file.read_to_end(&mut buffer)?;
+        buffer
+    };
+
     let mut png = Png::try_from(buffer.as_slice())?;
     let chunk_type = ChunkType::from_str(&args.chunk_type)?;
     let chunk = Chunk::new(chunk_type, args.message.into_bytes());
     png.append_chunk(chunk);
-    let output_path = args.output.unwrap_or(args.file_path);
+
+    let output_path = if args.input.url.is_some() {
+        args.output.ok_or_else(|| anyhow::anyhow!("Output path is required when using --url"))?
+    } else {
+        args.output.unwrap_or(args.input.file_path.unwrap())
+    };
+
     let mut output_file = File::create(output_path)?;
     output_file.write_all(&png.as_bytes())?;
     println!("Message encoded successfully.");
@@ -73,9 +102,15 @@ fn encode(args: EncodeArgs) -> Result<()> {
 }
 
 fn decode(args: DecodeArgs) -> Result<()> {
-    let mut file = File::open(args.file_path)?;
-    let mut buffer = Vec::new();
-    file.read_to_end(&mut buffer)?;
+    let buffer = if let Some(url) = &args.input.url {
+        download_image(url)?
+    } else {
+        let mut file = File::open(args.input.file_path.as_ref().unwrap())?;
+        let mut buffer = Vec::new();
+        file.read_to_end(&mut buffer)?;
+        buffer
+    };
+
     let png = Png::try_from(buffer.as_slice())?;
     if let Some(chunk) = png.chunk_by_type(&args.chunk_type) {
         if let Ok(message) = chunk.data_as_string() {
@@ -105,12 +140,24 @@ fn remove(args: RemoveArgs) -> Result<()> {
 }
 
 fn print_chunks(args: PrintArgs) -> Result<()> {
-    let mut file = File::open(args.file_path)?;
-    let mut buffer = Vec::new();
-    file.read_to_end(&mut buffer)?;
+    let buffer = if let Some(url) = &args.input.url {
+        download_image(url)?
+    } else {
+        let mut file = File::open(args.input.file_path.as_ref().unwrap())?;
+        let mut buffer = Vec::new();
+        file.read_to_end(&mut buffer)?;
+        buffer
+    };
     let png = Png::try_from(buffer.as_slice())?;
     for chunk in png.chunks() {
         println!("{}", chunk);
     }
     Ok(())
+}
+
+fn download_image(url: &str) -> Result<Vec<u8>> {
+    let mut response = get(url)?;
+    let mut buffer = Vec::new();
+    response.copy_to(&mut buffer)?;
+    Ok(buffer)
 }
