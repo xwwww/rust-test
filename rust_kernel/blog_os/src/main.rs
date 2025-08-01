@@ -4,16 +4,18 @@
 // 2. 禁用Rust运行时（无main函数）
 #![no_main]
 
+mod kernel_module;
+
 use core::panic::PanicInfo;
+use kernel_module::*;
 
 // 自定义入口点
 #[no_mangle]  // 防止 Rust 改变函数名
 pub extern "C" fn _start() -> ! {
     // 在这里我们完全控制程序的执行
     
-    // 初始化 VGA 缓冲区（稍后实现）
-    vga_buffer::clear_screen();
-    vga_buffer::print_string("欢迎来到我的操作系统！");
+    // 简单的内核启动
+    // 稍后我们会添加 VGA 输出功能
     
     // 内核主循环
     loop {
@@ -23,27 +25,33 @@ pub extern "C" fn _start() -> ! {
 
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
-    // 自定义 panic 处理
-    vga_buffer::print_string("内核 Panic: ");
+    // 改进的 panic 处理
     if let Some(location) = info.location() {
-        vga_buffer::print_string(&format!(
-            "文件: {}, 行: {}", 
-            location.file(), 
-            location.line()
-        ));
+        // 这里应该输出到 VGA 缓冲区
+        // 现在先用简单的循环
     }
     
     loop {}
 }
 
-// VGA 缓冲区模块（简化版本）
-mod vga_buffer {
-    pub fn clear_screen() {
-        // 实现屏幕清理
+fn kernel_module_demo() {
+    let vga_module = KernelModule::new("VGA_DRIVER");
+    
+    match register_module(vga_module) {
+        Ok(()) => {
+            // 模块注册成功
+        }
+        Err(e) => {
+            // 处理错误
+        }
     }
     
-    pub fn print_string(s: &str) {
-        // 实现字符串打印
+    match initialize_all_modules() {
+        Ok(()) => {
+            // 所有模块初始化成功
+        }
+        Err(e) => {
+            // 处理初始化错误
+        }
     }
-}p {}
 }
