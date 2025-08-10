@@ -23,18 +23,18 @@ pub extern "C" fn _start() -> ! {
     vga_buffer_simple::init();
 
     // 输出基本文本
-    println!("欢迎来到 Blog OS!");
-    println!("这是一个用 Rust 编写的简单操作系统。");
+    println!("Welcome to Blog OS!");
+    println!("This is a simple operating system written in Rust.");
 
     // 演示彩色文本
     {{
         let mut writer = vga_buffer_simple::VgaWriter::new();
         writer.set_color(vga_buffer_simple::Color::Red, vga_buffer_simple::Color::Black);
-        writer.write_str("红色文本 ");
+        writer.write_str("Red ");
         writer.set_color(vga_buffer_simple::Color::Green, vga_buffer_simple::Color::Black);
-        writer.write_str("绿色文本 ");
+        writer.write_str("Green ");
         writer.set_color(vga_buffer_simple::Color::Blue, vga_buffer_simple::Color::Black);
-        writer.write_str("蓝色文本");
+        writer.write_str("Blue ");
         writer.set_color(vga_buffer_simple::Color::White, vga_buffer_simple::Color::Black);
         writeln!(writer, "");
     }}
