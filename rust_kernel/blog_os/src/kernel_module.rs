@@ -1,4 +1,4 @@
-use core::panic::PanicInfo;
+// 不再需要这个导入
 
 // 内核模块结构
 #[derive(Copy, Clone)]
@@ -24,14 +24,6 @@ impl KernelModule {
         self.initialized = true;
         Ok(())
     }
-    
-    pub fn is_initialized(&self) -> bool {
-        self.initialized
-    }
-    
-    pub fn name(&self) -> &'static str {
-        self.name
-    }
 }
 
 // 全局模块管理器
@@ -40,7 +32,9 @@ static mut MODULE_COUNT: usize = 0;
 
 pub fn register_module(module: KernelModule) -> Result<(), &'static str> {
     unsafe {
-        if MODULE_COUNT >= MODULES.len() {
+        // 使用一个固定的最大模块数，避免访问MODULES.len()
+        const MAX_MODULES: usize = 10;
+        if MODULE_COUNT >= MAX_MODULES {
             return Err("模块数量超限");
         }
         
@@ -61,8 +55,9 @@ pub fn initialize_all_modules() -> Result<(), &'static str> {
     Ok(())
 }
 
-// 使用示例
-fn kernel_module_demo() {
+// 导出内核模块演示函数，供main.rs调用
+#[no_mangle]
+pub fn kernel_module_demo_export() {
     let vga_module = KernelModule::new("VGA_DRIVER");
     let keyboard_module = KernelModule::new("KEYBOARD_DRIVER");
     
